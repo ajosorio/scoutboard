@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import Link from 'next/link';
 
 const GUARDIANS_TEAM_ID = 114;
 
@@ -33,7 +34,14 @@ export default async function PlayersPage() {
           {roster.map((player) => (
             <TableRow key={player.id}>
               <TableCell>{player.primaryNumber || '—'}</TableCell>
-              <TableCell className="font-medium">{player.fullName}</TableCell>
+              <TableCell className="font-medium">
+                <Link
+                  href={`/players/${player.id}`}
+                  className="hover:underline hover:text-primary"
+                >
+                  {player.fullName}
+                </Link>
+              </TableCell>
               <TableCell>{player.position.abbreviation}</TableCell>
               <TableCell>{player.status.description}</TableCell>
             </TableRow>

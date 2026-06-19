@@ -24,3 +24,58 @@ export async function getTeamRoster(teamId: number): Promise<Player[]> {
     status: entry.status,
   }));
 }
+
+export type PlayerDetails = {
+    id: number;
+    fullName: string;
+    firstName: string;
+    lastName: string;
+    primaryNumber?: string;
+    birthDate?: string;
+    currentAge?: number;
+    birthCity?: string;
+    birthCountry?: string;
+    height?: string;
+    weight?: number;
+    primaryPosition: { abbreviation: string; name: string };
+    batSide?: { description: string };
+    pitchHand?: { description: string };
+    mlbDebutDate?: string;
+    active: boolean;
+}
+
+export async function getPlayerDetails(
+  playerId: number
+): Promise<PlayerDetails | null> {
+  const res = await fetch(
+    `${MLB_API_BASE}/people/${playerId}`,
+    { next: { revalidate: 3600 } }
+  );
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+
+  if (!data.people || data.people.length === 0) return null;
+
+  const person = data.people[0];
+
+  return {
+    id: person.id,
+    fullName: person.fullName,
+    firstName: person.firstName,
+    lastName: person.lastName,
+    primaryNumber: person.primaryNumber,
+    birthDate: person.birthDate,
+    currentAge: person.currentAge,
+    birthCity: person.birthCity,
+    birthCountry: person.birthCountry,
+    height: person.height,
+    weight: person.weight,
+    primaryPosition: person.primaryPosition,
+    batSide: person.batSide,
+    pitchHand: person.pitchHand,
+    mlbDebutDate: person.mlbDebutDate,
+    active: person.active,
+  };
+}
